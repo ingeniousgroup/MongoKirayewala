@@ -3,19 +3,17 @@ import mongoose from "mongoose";
 const adminSchema = new mongoose.Schema({
     email: {
         type:String,
-        allowNull: false,
-        validate: {
-            isEmail: true
-        }
+        required:true
+        
     },
     password: {
         type:String,
-        allowNull: false,
+        required:true
     },
     balance: {
 
         type:Number,
-        allowNull: false,
+        required:true,
         defaultValue:0
     },
 

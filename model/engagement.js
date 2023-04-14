@@ -15,11 +15,11 @@ const engagementSchema = ({
    
     houseVisitCount :{
      type : Number,
-      allowNull : false
+     required:true
    },
    date:{
      type:String,
-     allowNull: false
+     required:true
    }
 
 });

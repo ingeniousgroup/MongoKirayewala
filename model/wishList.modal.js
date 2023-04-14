@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const wishListSchema = new mongoose.Schema({
     userId:{
         type:Number,
-        allowNull:false
+        required:true
     },
 });
 
