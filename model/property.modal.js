@@ -14,36 +14,36 @@ today = dd+'/'+mm+'/'+yyyy;
 const propertySchema = new mongoose.Schema({
     userId:{
         type:Number,
-        allowNull:false
+        required:true
     },
     description:{
         type:String,
-        allowNull:false
+        required:true
     },
     rent:{
         type:String,
-        allowNull:false
+        required:true
     },
     address:{
         type:String,
-        allowNull:false
+        required:true
     },
     status:{
         type:String,
-        allowNull:false
+        required:true
     },
     houseCategory:{
         type:String,
-        allowNull:false
+        required:true
     },
     imagesUrlArray:[],
     latitude:{
         type:String,
-        allowNull:false
+        required:true
     },
     longitude:{
         type:String,
-        allowNull:false
+        required:true
     },
     date:{
        type:String,

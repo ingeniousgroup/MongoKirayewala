@@ -1,5 +1,5 @@
+import { Admin } from "../model/admin.modal.js";
 
-import { Admin } from "../model/admin.model";
 export const viewBalance = async (request, response, next) => {
     try {
         let admin = await Admin.findOne();
