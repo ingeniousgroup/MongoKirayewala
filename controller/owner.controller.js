@@ -5,11 +5,13 @@ import bcrypt from "bcryptjs";
 import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 
+
 export const signIn = async (request, response, next) => {
     try {
-        let owner = User.findOne({ email: request.body.email, roll: request.body.roll });
-        if (owner)
-            return response.status(200).json({ massage: "signin success ", status: true });
+        let owner = User.findOne({ email: request.body.email, role: request.body.role });
+        if (owner){
+            return response.status(200).json({ massage: "signin success ",token, status: true });
+        }
         else
             return response.status(400).json({ massage: "signin failed", status: false });
     }
@@ -38,11 +40,11 @@ export const signUp = async (request, response, next) => {
 
 export const viewProperty = async (request, response, next) => {
     try {
-        let property = Property.find();
+        let property = await Property.find({userId : request.body.userId})
         if (property)
-            return response.status(200).json({ massage: "property shown success", status: true });
+            return response.status(200).json({ massage: "property shown success", status: true ,property});
         else
-            return response.status(400).json({ massage: "signin failed", status: false });
+            return response.status(400).json({ massage: "somthing is wrong", status: false });
     }
     catch (err) {
         console.log(err);
@@ -68,17 +70,17 @@ export const updateName = async (request, response, next) => {
     }
 }
 
-export const updateproperty = async (request, response, next) => {
+export const updateProperty = async (request, response, next) => {
     try {
         let result = await Property.updateOne(
             {
-                userid : request.body.userid
+                userId : request.body.userId
                 
             },
             {
                 description:request.body.description,
                 rent:request.body.rent,
-                imagesUrl:request.body.imageUrl
+                imagesUrlArray:request.body.imagesUrlArray
             }
         );
         return response.status(200).json({ message: "property updated", result, status: true });
@@ -86,7 +88,6 @@ export const updateproperty = async (request, response, next) => {
     }
     catch (err) {
         return response.status(500).json({ message: "internal server error", status: false });
-
     }
 }
 
@@ -129,11 +130,11 @@ export const owner_view_profile = async (request, response, next) => {
     }
 }
 
-export const viewenquiry = async (request,response,next)=>{
+export const viewEnquiry = async (request,response,next)=>{
     try {
-        let result = await HouseRequest.findOne();
+        let result = await HouseRequest.find();
         if(result)
-           return response.status(200).json({ message: "owner profile is", result, status: true });
+           return response.status(200).json({ message: "owner profile is", result, status: true});
 
            return response.status(202).json({message:"something went wrong" ,status:false});
 
@@ -142,4 +143,17 @@ export const viewenquiry = async (request,response,next)=>{
         return response.status(500).json({ message: "internal server error", status: false });
 
     }   
+}
+
+export const addProperty = async (request,response,next) => {
+    try {
+        let addproperty = await Property.create(request.body);
+        if(addproperty)
+         return response.status(200).json({message:"property saved ",status:true});
+
+         return response.status(400).json({message:"something went wrong ",status:false});
+    } catch (err) {
+        console.log(err);
+        return response.status(500).json({message:"Internal server Error",status:false});
+    }
 }

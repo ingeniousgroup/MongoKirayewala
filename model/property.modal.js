@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 var today = new Date();
 var dd = today.getDate();
@@ -13,8 +13,9 @@ today = dd+'/'+mm+'/'+yyyy;
 
 const propertySchema = new mongoose.Schema({
     userId:{
-        type:Number,
-        required:true
+        type:Schema.Types.ObjectId,
+        required:true,
+        ref:"user"
     },
     description:{
         type:String,
