@@ -13,8 +13,8 @@ today = dd+'/'+mm+'/'+yyyy;
 
 const propertySchema = new mongoose.Schema({
     userId:{
-        type:Number,
-        required:true
+       type : mongoose.Schema.Types.ObjectId,
+       ref:"user"
     },
     description:{
         type:String,
