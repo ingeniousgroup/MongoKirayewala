@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Property } from "../model/property.modal.js";
 import { WishList } from "../model/wishList.modal.js";
+import { HouseRequest } from "../model/houseRequest.modal.js";
 
 console.log("inside the tenant Controller... ");
 
@@ -29,6 +30,9 @@ export const signUp = async (request,response,next)=>{
    const errors = validationResult(request);
    if(!errors.isEmpty())
      return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
+   let exist = await User.findOne({contact:request.body.contact});  
+   if(exist)
+     return response.status(400).json({error: "Account already exist", status: false, errors: errors.array()});
    const saltKey = await bcrypt.genSalt(10); 
    request.body.password = await bcrypt.hash(request.body.password,saltKey);
    
@@ -62,7 +66,7 @@ export const view_profile = async (request,response,next)=>{
 
 export const update_profile = async (request,response,next)=>{
   try{
-    let user = await User.findOneAndUpdate({_id:request.body.id},{email:request.body.email,contact:request.body.contact,password:request.body.password},{new:true})
+    let user = await User.findOneAndUpdate({_id:request.body.id},{name:request.body.name,email:request.body.email,contact:request.body.contact},{new:true})
     return user ? response.status(200).json({message: 'Update Successfull', status: true,user}) : response.status(401).json({message: 'Unauthorized user', status: false});
   }catch (err) {
     console.log(err);
@@ -95,16 +99,16 @@ export const add_to_wishList = async (request,response,next)=>{
     try{ 
      let wishList =  await WishList.findOne({userId: request.body.userId});
      if(wishList){
-        if(wishList.wishListItem.some((item)=>item.propertyId == request.body.propertyId))
+        if(wishList.wishListItems.some((item)=>item.propertyId == request.body.propertyId))
           return response.status(200).json({message: "Already added in WishList", status: true});
-        cart.cartItems.push({productId: request.body.productId});
-        let saved = await cart.save();
+        wishList.wishListItems.push({productId: request.body.productId});
+        let saved = await wishList.save();
         return response.status(200).json({message: " House added in Wishlist", status: true});
      }
      else{
        let saved = await WishList.create({
            userId: request.body.userId,
-           wishListItems:[{productId: request.body.productId}]
+           wishListItems:[{propertyId: request.body.propertyId}]
        });
        return response.status(200).json({message: "House added successfully", status: true});
      }
@@ -114,9 +118,98 @@ export const add_to_wishList = async (request,response,next)=>{
       return response.status(500).json({error: "Internal Server Error", status: false});
     } 
 }
-export const remove_from_wishList = async (request,response,next)=>{}
-export const house_request = async (request,response,next)=>{}
-export const nearBy_house = async (request,response,next)=>{}
+
+export const view_wishList = async(request,response,next)=>{
+    WishList.find({userId: request.body.userId})
+    .populate("wishListItems.propertyId").then(result=>{
+        return response.status(200).json(result);
+    }).catch(err=>{
+        console.log(err);
+        return response.status(500).json({error: "Internal server error"});
+    })
+}
+
+export const remove_from_wishList = async (request,response,next)=>{
+   try {
+    let wishList =  await WishList.findOne({userId: request.body.userId});
+    if(wishList){
+       wishList.wishListItems.splice(wishList.wishListItems.findIndex(item => item._id == request.body.propertyId),1);
+       let saved = await wishList.save();
+      return response.status(200).json({message: "Remove From WishList", status: true, saved});
+    }else
+      return response.status(401).json({message:"Bad Request Error" , status : false});
+   }catch(err){
+    console.log(err);
+      return response.status(500).json({message : "Internal Server Error",status:false});
+   }
+}
+export const house_request = async (request,response,next)=>{
+  try{ 
+    const errors = validationResult(request);
+    if(!errors.isEmpty())
+      return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
+   
+    let req = await HouseRequest.create(request.body);
+    return response.status(200).json({message: "Request Send Successfully", req, status: true});
+   }
+   catch(err){
+     return response.status(500).json({error: "Internal Server Error", status: false});
+   }
+}
+
+export const forgot_password = async (request ,response , next) =>{
+  try{
+    let user = await User.findOne({contact: request.body.contact});
+    if (user) {
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+            user: 'rajputmohit2134@gmail.com',
+            pass: 'drxyrqbrxikerqfn'
+            }
+        }); 
+    
+        var mailOptions = {
+            from: 'rajputmohit2134@gmail.com',
+            to: user.email,
+            subject: 'Sending Email using Node.js',
+            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+otp+'</p>'
+        };
+  
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error)
+            console.log(error);
+            else 
+            console.log('Email sent: ' + info.response);
+            
+        });
+            return response.status(200).json({message:"Password set Successfully"});
+
+    }
+    return response.status(401).json({message:"User not exist",status:false});
+    }
+    catch(err){
+        console.log(err);
+        return response.status(500).json({err:"internal server error",status:false});
+    }
+
+}
+
+export const searching = (request,response,next)=>{
+  console.log("serchig in ")
+  var regex = new RegExp(request.body.address,'i');
+  Property.find({address:regex}).then(result=>{
+    return response.status(200).json({message:"Data Found", result, status:true})
+  }).catch(err=>{
+    console.log(err);
+  });
+}
+
+
+export const nearBy_house = async (request,response,next)=>{
+  
+}
+
 
 
 
