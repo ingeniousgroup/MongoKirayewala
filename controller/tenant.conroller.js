@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 import { Property } from "../model/property.modal.js";
 import { WishList } from "../model/wishList.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
+import nodemailer from "nodemailer";
+import { Engagement } from "../model/engagement.js";
 
-console.log("inside the tenant Controller... ");
 
 export const signIn = async (request,response,next)=>{
   try{
@@ -161,6 +162,13 @@ export const forgot_password = async (request ,response , next) =>{
   try{
     let user = await User.findOne({contact: request.body.contact});
     if (user) {
+        var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var passwordLength = 12;
+        var password = "";
+        for (var i = 0; i <= passwordLength; i++) {
+          var randomNumber = Math.floor(Math.random() * chars.length);
+          password += chars.substring(randomNumber, randomNumber +1);
+         }
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -169,13 +177,15 @@ export const forgot_password = async (request ,response , next) =>{
             }
         }); 
     
+       let u = await User.updateOne({contact:request.body.contact},{password}); 
+       if(u){
         var mailOptions = {
             from: 'rajputmohit2134@gmail.com',
             to: user.email,
             subject: 'Sending Email using Node.js',
-            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+otp+'</p>'
+            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+password+'</p>'
         };
-  
+      
         transporter.sendMail(mailOptions, function(error, info){
             if (error)
             console.log(error);
@@ -184,6 +194,7 @@ export const forgot_password = async (request ,response , next) =>{
             
         });
             return response.status(200).json({message:"Password set Successfully"});
+      }
 
     }
     return response.status(401).json({message:"User not exist",status:false});
@@ -196,7 +207,6 @@ export const forgot_password = async (request ,response , next) =>{
 }
 
 export const searching = (request,response,next)=>{
-  console.log("serchig in ")
   var regex = new RegExp(request.body.address,'i');
   Property.find({address:regex}).then(result=>{
     return response.status(200).json({message:"Data Found", result, status:true})
@@ -205,6 +215,13 @@ export const searching = (request,response,next)=>{
   });
 }
 
+export const visit_count = async(request,response,next)=>{
+  try {
+    
+  } catch (err) {
+    
+  }
+}
 
 export const nearBy_house = async (request,response,next)=>{
   
