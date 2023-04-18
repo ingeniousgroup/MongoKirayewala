@@ -1,21 +1,12 @@
-import mongoose, { Schema } from "mongoose";
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth()+1; 
-var yyyy = today.getFullYear();
-
-if(dd<10) 
-    dd='0'+dd; 
-if(mm<10) 
-    mm='0'+mm; 
-today = dd+'/'+mm+'/'+yyyy;
+import mongoose from "mongoose";
+import today from "../date.js";
 
 const propertySchema = new mongoose.Schema({
     userId:{
-        type:Schema.Types.ObjectId,
-        required:true,
-        ref:"user"
+       type : mongoose.Schema.Types.ObjectId,
+       ref:"user"
+
     },
     description:{
         type:String,
