@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
     },
-    role : String,
+    role :{type: String},
 
     longitude:Number,
 
