@@ -16,3 +16,4 @@ router.post("/remove_owner",removeOwner);
 router.post("/remove_tenant",removeTenant);
 
 export default router;
+

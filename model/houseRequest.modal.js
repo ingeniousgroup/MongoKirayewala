@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import today from "../date.js";
 
 const houseRequestSchema = new mongoose.Schema({
     userId:{
@@ -10,12 +11,23 @@ const houseRequestSchema = new mongoose.Schema({
         ref:"property",
     },
  
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    },
+   
+    propertyId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "property"
+    },
+   
     message:{
         type:String
     },
 
     date:{
-        type:String
+        type:String,
+        default : today
     }
 
 });

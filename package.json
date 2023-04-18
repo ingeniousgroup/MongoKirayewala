@@ -4,25 +4,4 @@
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "express-validator": "^6.15.0",
-    "mongoose": "^7.0.3"
-  },
-  "name": "mongokirayewala",
-  "version": "1.0.0",
-  "main": "app.js",
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ingeniousgroup/MongoKirayewala.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ingeniousgroup/MongoKirayewala/issues"
-  },
-  "homepage": "https://github.com/ingeniousgroup/MongoKirayewala#readme",
-  "description": ""
 }
