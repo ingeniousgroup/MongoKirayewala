@@ -6,12 +6,14 @@ import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 
 
+
+
 export const signIn = async (request, response, next) => {
     try {
-        let owner = User.findOne({ email: request.body.email, role: request.body.role });
-        if (owner){
-            return response.status(200).json({ massage: "signin success ",token, status: true });
-        }
+        let owner = User.findOne({ email: request.body.email, roll: request.body.roll });
+        if (owner)
+            return response.status(200).json({ massage: "signin success ", status: true });
+
         else
             return response.status(400).json({ massage: "signin failed", status: false });
     }
@@ -40,11 +42,14 @@ export const signUp = async (request, response, next) => {
 
 export const viewProperty = async (request, response, next) => {
     try {
+
         let property = await Property.find({userId : request.body.userId})
+       
+        let property = Property.find();
         if (property)
-            return response.status(200).json({ massage: "property shown success", status: true ,property});
+            return response.status(200).json({ massage: "property shown success", status: true });
         else
-            return response.status(400).json({ massage: "somthing is wrong", status: false });
+            return response.status(400).json({ massage: "signin failed", status: false });
     }
     catch (err) {
         console.log(err);
@@ -70,6 +75,7 @@ export const updateName = async (request, response, next) => {
     }
 }
 
+
 export const updateProperty = async (request, response, next) => {
     try {
         let result = await Property.updateOne(
@@ -80,7 +86,9 @@ export const updateProperty = async (request, response, next) => {
             {
                 description:request.body.description,
                 rent:request.body.rent,
+
                 imagesUrlArray:request.body.imagesUrlArray
+
             }
         );
         return response.status(200).json({ message: "property updated", result, status: true });
@@ -88,6 +96,7 @@ export const updateProperty = async (request, response, next) => {
     }
     catch (err) {
         return response.status(500).json({ message: "internal server error", status: false });
+
     }
 }
 
@@ -130,11 +139,13 @@ export const owner_view_profile = async (request, response, next) => {
     }
 }
 
+
 export const viewEnquiry = async (request,response,next)=>{
     try {
         let result = await HouseRequest.find();
         if(result)
            return response.status(200).json({ message: "owner profile is", result, status: true});
+
 
            return response.status(202).json({message:"something went wrong" ,status:false});
 
@@ -143,6 +154,7 @@ export const viewEnquiry = async (request,response,next)=>{
         return response.status(500).json({ message: "internal server error", status: false });
 
     }   
+
 }
 
 export const addProperty = async (request,response,next) => {
@@ -157,3 +169,6 @@ export const addProperty = async (request,response,next) => {
         return response.status(500).json({message:"Internal server Error",status:false});
     }
 }
+
+}
+
