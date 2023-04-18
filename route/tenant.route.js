@@ -1,5 +1,5 @@
 import express from "express";
-import { add_to_wishList, change_password, forgot_password, house_request, remove_from_wishList, searching, signIn, signUp, update_profile, view_profile, view_property, view_wishList } from "../controller/tenant.conroller.js";
+import { addToWishList, changePassword, forgotPassword, houseRequest, removeFromWishList, searching, signIn, signUp, updateProfile, viewProfile, viewProperty, viewWistlist,  visitCount} from "../controller/tenant.conroller.js";
 import { body } from "express-validator";
 
 const router = express.Router();
@@ -16,24 +16,27 @@ router.post("/signin",
 body("email").isEmail().notEmpty(),
 signIn);
 
-router.post("/viewProperty",view_property);
+router.post("/viewProperty",viewProperty);
 
-router.post("/viewProfile",view_profile);
 
-router.post("/updateProfile",update_profile);
+router.post("/viewProfile",viewProfile);
 
-router.post("/changePassword",change_password);
+router.post("/updateProfile",updateProfile);
 
-router.post("/forgotPassword",forgot_password);
+router.post("/changePassword",changePassword);
 
-router.post("/addToWishList",add_to_wishList);
+router.post("/forgotPassword",forgotPassword);
 
-router.post("/viewWishlist",view_wishList);
+router.post("/addToWishList",addToWishList);
 
-router.post("/removeFromWishList",remove_from_wishList);
+router.post("/viewWishlist",viewWistlist);
 
-router.post("/houseRequest",house_request);
+router.post("/removeFromWishList",removeFromWishList);
+
+router.post("/houseRequest",houseRequest);
 
 router.post("/search",searching);
+
+router.post("/profileVisit",visitCount);
 
 export default router;
