@@ -17,12 +17,14 @@ export const signIn = async (request,response,next)=>{
     let user = await User.findOne({email: request.body.email});
 
     let status = user ? await bcrypt.compare(request.body.password,user.password): false;
+
     if(status){
       let payload = {subject:request.body.email};
       let token = jwt.sign(payload,'afkkkdnkk');
     }
     return status ? response.status(200).json({message: 'Signin Success', status: true,token, user: {...user.toObject(),password: undefined}}) :
              response.status(401).json({message: 'Unauthorized user', status: false});
+
   }
   catch(err){
     console.log(err);
