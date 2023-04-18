@@ -1,8 +1,10 @@
 import express  from "express";
 import db from "./database/database-connectivity.js";
 import bodyParser from "body-parser";
-import AdminRouter from "./route/admin.route.js";
-import OwnerRouter from "./route/owner.route.js";
+
+import AdminRouter from "./route/admin.route.js"
+import OwnerRouter from "./route/owner.route.js"
+
 import TenantRouter from "./route/tenant.route.js";
 const app = express();
 
@@ -13,6 +15,7 @@ app.use("/admin",AdminRouter);
 app.use("/tenant",TenantRouter);
 
 app.use("/owner",OwnerRouter);
+
 app.listen(3000,()=>{
    console.log("server Started");
 });

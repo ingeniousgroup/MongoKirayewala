@@ -23,7 +23,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
     },
-    role : String,
+    role : {
+     type: String,
+     required:true
+    },
 
     longitude:Number,
 
