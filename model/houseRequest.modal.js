@@ -3,15 +3,6 @@ import today from "../date.js";
 
 const houseRequestSchema = new mongoose.Schema({
     userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
-    },
-    propertyId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"property",
-    },
- 
-    userId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     },

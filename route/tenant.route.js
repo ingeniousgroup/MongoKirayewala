@@ -18,7 +18,6 @@ signIn);
 
 router.post("/viewProperty",viewProperty);
 
-
 router.post("/viewProfile",viewProfile);
 
 router.post("/updateProfile",updateProfile);
