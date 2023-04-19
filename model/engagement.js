@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import today from "../date.js"
 
 const engagementSchema = ({
@@ -8,11 +8,25 @@ const engagementSchema = ({
     ref : "property"
   },
   
+  visitedUser:[{
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    },
+    date:{
+      type:String,
+      required:true,
+      default : today
+    }
+  }],
+
   houseVisitCount :{
      type : Number,
      required:true
    },
    
+<<<<<<< HEAD
+=======
   date:{
      type:String,
      required:true,
@@ -20,6 +34,7 @@ const engagementSchema = ({
   }
 
 
+>>>>>>> ddec7bfaeb1133bfa06d5d3982475afb062a23fb
 });
 
 export const Engagement = mongoose.model("engagement",engagementSchema);

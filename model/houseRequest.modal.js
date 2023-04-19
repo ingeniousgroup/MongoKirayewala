@@ -25,6 +25,11 @@ const houseRequestSchema = new mongoose.Schema({
         type:String
     },
 
+    status:{
+     type:Boolean,
+     default:true
+    },
+
     date:{
         type:String,
         default : today
