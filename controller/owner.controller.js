@@ -4,6 +4,8 @@ import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
+import { Subscription } from "../model/subscription.js";
+import today from "../date.js";
 
 
 export const signIn = async (request, response, next) => {
@@ -53,23 +55,6 @@ export const viewProperty = async (request, response, next) => {
     }
 }
 
-export const updateName = async (request, response, next) => {
-    try {
-        let result = await User.updateOne(
-            {
-                _id : request.body.userid
-            },
-            {
-                name:request.body.name
-            }
-        );
-        return response.status(200).json({ message: "name Updated", result, status: true });
-
-    }
-    catch (err) {
-        return response.status(500).json({ message: "internal server error", status: false });
-    }
-}
 
 
 export const updateProperty = async (request, response, next) => {
@@ -167,3 +152,21 @@ export const addProperty = async (request,response,next) => {
 }
 
 
+export const subscription = async (request,response,next)=>{
+    try {
+        let takeSubscription = Subscription.create({userId:request.body.userId});
+        if(takeSubscription)
+           return response.status(200).json({message:"subscription taken " , status:true});
+        return response.status(400).json({message:"something went wrong ",status:false});
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({message:"internal server error ",status:false});
+    }
+}
+
+export const expireSubscription = async (request,response,next)=>{
+    let subscriptionList = await Subscription.findOne({userId:request.body.userId});
+    if(today>subscriptionList.subscriptionExpiry){
+        let data = await Subscription.findOneAndDelete({userId:request.body.userId});
+    }
+}
