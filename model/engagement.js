@@ -24,9 +24,7 @@ const engagementSchema = ({
      type : Number,
      required:true
    },
-   
-<<<<<<< HEAD
-=======
+  
   date:{
      type:String,
      required:true,
@@ -34,7 +32,7 @@ const engagementSchema = ({
   }
 
 
->>>>>>> ddec7bfaeb1133bfa06d5d3982475afb062a23fb
+
 });
 
 export const Engagement = mongoose.model("engagement",engagementSchema);

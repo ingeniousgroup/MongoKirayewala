@@ -1,27 +1,32 @@
 import mongoose from "mongoose";
 
 const adminSchema = new mongoose.Schema({
-    email: {
-        type:String,
-<<<<<<< HEAD
-        required:true        
-=======
-
-        required:true,
-        
->>>>>>> ddec7bfaeb1133bfa06d5d3982475afb062a23fb
+    name: {
+        type: String,
+        required:true
     },
+    email: {
+        type: String,
+        required: true
+    }
+    ,
     password: {
-        type:String,
+        type: String,
 
+        required: true
+
+    },
+    contact:{
+        type:Number
+        ,
         required:true
 
     },
     balance: {
-        type:Number,
-        required:true,
-        defaultValue:0
+        type: Number,
+        required: true,
+        defaultValue: 0
     },
 
 });
-export const Admin = mongoose.model("admin",adminSchema);
+export const Admin = mongoose.model("admin", adminSchema);
