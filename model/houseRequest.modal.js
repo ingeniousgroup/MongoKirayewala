@@ -10,16 +10,6 @@ const houseRequestSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"property",
     },
- 
-    userId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
-    },
-   
-    propertyId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "property"
-    },
    
     message:{
         type:String

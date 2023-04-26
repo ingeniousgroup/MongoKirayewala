@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
 
     longitude:Number,
 
-    lattitude:Number
+    latitude:Number
 });
 
 export const User = mongoose.model("user",userSchema);
