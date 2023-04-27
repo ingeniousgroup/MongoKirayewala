@@ -13,11 +13,15 @@ import OwnerRouter from "./route/owner.route.js"
 
 import TenantRouter from "./route/tenant.route.js";
 
+import cors from 'cors';
+
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors());
+
+app.use("/admin",AdminRouter);
 
 app.use("/admin",AdminRouter);
 app.use("/tenant",TenantRouter);
