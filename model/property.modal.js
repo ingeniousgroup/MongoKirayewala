@@ -1,7 +1,7 @@
 
 import mongoose from "mongoose";
 import today from "../date.js";
-
+console.log(today);
 const propertySchema = new mongoose.Schema({
     userId:{
        type : mongoose.Schema.Types.ObjectId,
@@ -39,7 +39,7 @@ const propertySchema = new mongoose.Schema({
     },
     date:{
        type:String,
-       defaultValue: today
+       default: today
     }
 });
 export const Property = mongoose.model("property",propertySchema);

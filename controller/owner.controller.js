@@ -6,6 +6,7 @@ import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
+import db from "../database/database-connectivity.js";
 
 
 export const signIn = async (request, response, next) => {
@@ -151,6 +152,18 @@ export const addProperty = async (request,response,next) => {
     }
 }
 
+export const addPropertyDetails = async (request,response,next) => {
+    try {
+        let addproperty =  db.collection("propertyDetails").insertOne(request.body);
+        if(addproperty)
+         return response.status(200).json({message:"property saved ",status:true});
+
+         return response.status(400).json({message:"something went wrong ",status:false});
+    } catch (err) {
+        console.log(err);
+        return response.status(500).json({message:"Internal server Error",status:false});
+    }
+}
 
 export const subscription = async (request,response,next)=>{
     try {
