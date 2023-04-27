@@ -4,7 +4,6 @@ import { viewBalance, signIn, signUp, viewOwners, viewTenants, changePassword, v
 const router = express.Router();
 router.post("/signup", body("email", "invalid email").isEmail(),
     body("password", "must be 5 character and numeric").isNumeric().isLength({ min: 5 }),
-    body("balance", "only numeric").isNumeric(),
     signUp);
 router.post("/signin", signIn);
 router.post("/view_balance", viewBalance);

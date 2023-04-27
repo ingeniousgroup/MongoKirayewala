@@ -19,12 +19,13 @@ export const signIn = async (request, response, next) => {
 }
 export const signUp = async (request, response, next) => {
     try {
+          console.log("fghj")
         const errors = validationResult(request);
         if (!errors.isEmpty())
-            return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
+            return response.status(400).json({ error: "Bad requesttttttttttt", status: false, errors: errors.array() });
         const saltKey = await bcrypt.genSalt(10);
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
-        let user = await Admin.create({name:request.body.name, email: request.body.email, password: request.body.password, contact:request.body.contact,balance: request.body.balance });
+        let user = await Admin.create({name:request.body.name, email: request.body.email, password: request.body.password, contact:request.body.contact,balance: 0 });
         return response.status(200).json({ message: "Signup success", user: user, status: true });
     }
     catch (err) {
@@ -60,11 +61,13 @@ export const viewOwners = async (request, response, next) => {
 }
 
 export const changePassword = async (request, response, next) => {
-    console.log("hello")
+    
     try {
         let admin = await Admin.findOne({ _id: request.body.id });
         if (admin) {
-            if (bcrypt.compare(request.body.currentPassword, admin.password)) {
+            
+
+            if ( await bcrypt.compare(request.body.currentPassword, admin.password)) {
                 var saltKey = await bcrypt.genSalt(10);
                 let password = await bcrypt.hash(request.body.newPassword, saltKey);
                 let admin = await Admin.updateOne({ _id: request.body.id }, { password });
@@ -81,6 +84,7 @@ export const changePassword = async (request, response, next) => {
 
 export const viewHouseRequest = async (request, response, next) => {
     try {
+        
         let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
         return response.status(200).json({ requestList, status: true });
     } catch (error) {
