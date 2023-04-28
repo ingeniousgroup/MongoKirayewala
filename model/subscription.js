@@ -1,7 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import today from "../date.js";
 import expiryDate from "../expiryDate.js";
-console.log(expiryDate)
+
 const subscriptionSchema = new mongoose.Schema({
     userId:{
         type: mongoose.Schema.Types.ObjectId,
