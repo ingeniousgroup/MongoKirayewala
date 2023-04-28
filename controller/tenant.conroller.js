@@ -11,15 +11,18 @@ import { Engagement } from "../model/engagement.js";
 
 export const signIn = async (request,response,next)=>{
   try{
+    const errors = validationResult(request);
+    if(!errors.isEmpty())
+     return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
     let user = await User.findOne({email: request.body.email});
 
     let status = user ? await bcrypt.compare(request.body.password,user.password): false;
 
     if(status){
       let payload = {subject:request.body.email};
-      let token = jwt.sign(payload,'afkkkdnkk');
+      let userToken = jwt.sign(payload,'afkkkdnkk');
     }
-    return status ? response.status(200).json({message: 'Signin Success', status: true,token, user: {...user.toObject(),password: undefined}}) :
+    return status ? response.status(200).json({ message: 'Signin Success', status: true, user: {...user.toObject(),password: undefined}}) :
              response.status(401).json({message: 'Unauthorized user', status: false});
 
   }
@@ -28,6 +31,7 @@ export const signIn = async (request,response,next)=>{
     return response.status(500).json({error:"Internal Server Error", status: false});
   }
 }
+
 export const signUp = async (request,response,next)=>{
   try{ 
    const errors = validationResult(request);
@@ -47,7 +51,7 @@ export const signUp = async (request,response,next)=>{
   }
 }
 
-export const view_property = async (request,response,next)=>{
+export const viewProperty = async (request,response,next)=>{
   try {
     let property = await Property.find({userId:request.body.userId});
      return response.status(200).json({message:"Property Found",status:true,property})
@@ -56,7 +60,8 @@ export const view_property = async (request,response,next)=>{
      return response.status(500).json({message:"Internal Server Error",status:false})
   }
 }
-export const view_profile = async (request,response,next)=>{
+
+export const viewProfile = async (request,response,next)=>{
   try {
     let user = await User.findById(request.body.id);
     console.log(user);
@@ -67,8 +72,11 @@ export const view_profile = async (request,response,next)=>{
   }
 }
 
-export const update_profile = async (request,response,next)=>{
+export const updateProfile = async (request,response,next)=>{
   try{
+   const errors = validationResult(request);
+   if(!errors.isEmpty())
+     return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
     let user = await User.findOneAndUpdate({_id:request.body.id},{name:request.body.name,email:request.body.email,contact:request.body.contact},{new:true})
     return user ? response.status(200).json({message: 'Update Successfull', status: true,user}) : response.status(401).json({message: 'Unauthorized user', status: false});
   }catch (err) {
@@ -77,7 +85,7 @@ export const update_profile = async (request,response,next)=>{
   }
 }
 
-export const change_password = async (request,response,next)=>{
+export const changePassword = async (request,response,next)=>{
   try {
     let user = await User.findOne({_id: request.body.id});
     let status = user ? await bcrypt.compare(request.body.password,user.password): false;
@@ -98,7 +106,8 @@ export const view_house_description = async (request,response,next)=>{
   
 
 }
-export const add_to_wishList = async (request,response,next)=>{
+
+export const addToWishList = async (request,response,next)=>{
     try{ 
      let wishList =  await WishList.findOne({userId: request.body.userId});
      if(wishList){
@@ -122,7 +131,7 @@ export const add_to_wishList = async (request,response,next)=>{
     } 
 }
 
-export const view_wishList = async(request,response,next)=>{
+export const viewWistlist = async(request,response,next)=>{
     WishList.find({userId: request.body.userId})
     .populate("wishListItems.propertyId").then(result=>{
         return response.status(200).json(result);
@@ -132,7 +141,7 @@ export const view_wishList = async(request,response,next)=>{
     })
 }
 
-export const remove_from_wishList = async (request,response,next)=>{
+export const removeFromWishList = async (request,response,next)=>{
    try {
     let wishList =  await WishList.findOne({userId: request.body.userId});
     if(wishList){
@@ -146,7 +155,8 @@ export const remove_from_wishList = async (request,response,next)=>{
       return response.status(500).json({message : "Internal Server Error",status:false});
    }
 }
-export const house_request = async (request,response,next)=>{
+
+export const houseRequest = async (request,response,next)=>{
   try{ 
     const errors = validationResult(request);
     if(!errors.isEmpty())
@@ -160,12 +170,12 @@ export const house_request = async (request,response,next)=>{
    }
 }
 
-export const forgot_password = async (request ,response , next) =>{
+export const forgotPassword = async (request ,response , next) =>{
   try{
     let user = await User.findOne({contact: request.body.contact});
     if (user) {
         var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var passwordLength = 12;
+        var passwordLength = 8;
         var password = "";
         for (var i = 0; i <= passwordLength; i++) {
           var randomNumber = Math.floor(Math.random() * chars.length);
@@ -178,14 +188,17 @@ export const forgot_password = async (request ,response , next) =>{
             pass: 'drxyrqbrxikerqfn'
             }
         }); 
-    
+        const saltKey = await bcrypt.genSalt(10); 
+        htmlPass = password;
+        password = await bcrypt.hash(password,saltKey);
+     
        let u = await User.updateOne({contact:request.body.contact},{password}); 
        if(u){
         var mailOptions = {
             from: 'rajputmohit2134@gmail.com',
             to: user.email,
             subject: 'Sending Email using Node.js',
-            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+password+'</p>'
+            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+htmlPass+'</p>'
         };
       
         transporter.sendMail(mailOptions, function(error, info){
@@ -217,11 +230,27 @@ export const searching = (request,response,next)=>{
   });
 }
 
-export const visit_count = async(request,response,next)=>{
+export const visitCount = async(request,response,next)=>{
   try {
-    
+   let pro = await Engagement.findOne({propertyId:request.body.propertyId});
+     if(pro){
+       if(pro.visitedUser.find((user)=>user.userId==request.body.userId))
+         return response.status(200).json({message:"user already visited",status: true});
+      pro.houseVisitCount++;
+      pro.visitedUser.push({userId:request.body.userId});
+      await pro.save();
+      return response.status(200).json({message:"Count ++",status:true,pro});
+   }else{
+      await Engagement.create({
+        propertyId : request.body.propertyId,
+        visitedUser:[{userId : request.body.userId}],
+        houseVisitCount : 1
+     });
+    return response.status(200).json({message:"Count ++",status:true});
+   }
   } catch (err) {
-    
+    console.log(err);
+    return response.status(500).json({message:"Internal Server Error", status:false});
   }
 }
 
