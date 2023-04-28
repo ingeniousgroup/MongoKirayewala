@@ -18,7 +18,6 @@ signIn);
 
 router.post("/viewProperty",viewProperty);
 
-
 router.post("/viewProfile",viewProfile);
 
 router.post("/updateProfile",updateProfile);
@@ -38,5 +37,7 @@ router.post("/houseRequest",houseRequest);
 router.post("/search",searching);
 
 router.post("/profileVisit",visitCount);
+
+// router.get('/proertyList',viewPropertyList);
 
 export default router;

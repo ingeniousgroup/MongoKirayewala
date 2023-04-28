@@ -20,9 +20,9 @@ export const signIn = async (request,response,next)=>{
 
     if(status){
       let payload = {subject:request.body.email};
-      let token = jwt.sign(payload,'afkkkdnkk');
+      let userToken = jwt.sign(payload,'afkkkdnkk');
     }
-    return status ? response.status(200).json({message: 'Signin Success', status: true,token, user: {...user.toObject(),password: undefined}}) :
+    return status ? response.status(200).json({ message: 'Signin Success', status: true, user: {...user.toObject(),password: undefined}}) :
              response.status(401).json({message: 'Unauthorized user', status: false});
 
   }
@@ -175,7 +175,7 @@ export const forgotPassword = async (request ,response , next) =>{
     let user = await User.findOne({contact: request.body.contact});
     if (user) {
         var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var passwordLength = 12;
+        var passwordLength = 8;
         var password = "";
         for (var i = 0; i <= passwordLength; i++) {
           var randomNumber = Math.floor(Math.random() * chars.length);
@@ -188,14 +188,17 @@ export const forgotPassword = async (request ,response , next) =>{
             pass: 'drxyrqbrxikerqfn'
             }
         }); 
-    
+        const saltKey = await bcrypt.genSalt(10); 
+        htmlPass = password;
+        password = await bcrypt.hash(password,saltKey);
+     
        let u = await User.updateOne({contact:request.body.contact},{password}); 
        if(u){
         var mailOptions = {
             from: 'rajputmohit2134@gmail.com',
             to: user.email,
             subject: 'Sending Email using Node.js',
-            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+password+'</p>'
+            html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+htmlPass+'</p>'
         };
       
         transporter.sendMail(mailOptions, function(error, info){
