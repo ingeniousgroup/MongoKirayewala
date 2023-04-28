@@ -39,7 +39,7 @@ const propertySchema = new mongoose.Schema({
     },
     date:{
        type:String,
-       defaultValue: today
+       default: today
     }
 });
 export const Property = mongoose.model("property",propertySchema);
