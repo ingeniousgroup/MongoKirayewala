@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     email:{
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    unique:true
     },
 
     password:{
@@ -32,7 +33,7 @@ const userSchema = new mongoose.Schema({
 
     longitude:Number,
 
-    lattitude:Number
+    latitude:Number
 });
 
 export const User = mongoose.model("user",userSchema);

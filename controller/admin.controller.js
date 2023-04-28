@@ -24,7 +24,7 @@ export const signUp = async (request, response, next) => {
             return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
         const saltKey = await bcrypt.genSalt(10);
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
-        let user = await Admin.create({ email: request.body.email, password: request.body.password, balance: request.body.balance });
+        let user = await Admin.create({name:request.body.name, email: request.body.email, password: request.body.password, contact:request.body.contact,balance: request.body.balance });
         return response.status(200).json({ message: "Signup success", user: user, status: true });
     }
     catch (err) {
@@ -60,6 +60,7 @@ export const viewOwners = async (request, response, next) => {
 }
 
 export const changePassword = async (request, response, next) => {
+    console.log("hello")
     try {
         let admin = await Admin.findOne({ _id: request.body.id });
         if (admin) {
