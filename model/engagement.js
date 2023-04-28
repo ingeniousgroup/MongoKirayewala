@@ -24,14 +24,11 @@ const engagementSchema = ({
      type : Number,
      required:true
    },
-  
   date:{
      type:String,
      required:true,
      default : today
   }
-
-
 
 });
 
