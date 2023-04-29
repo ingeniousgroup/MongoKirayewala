@@ -3,7 +3,7 @@ import { User } from "../model/user.model.js";
 import bcrypt from "bcryptjs";
 import { validationResult } from "express-validator";
 import { HouseRequest } from "../model/houseRequest.modal.js";
-
+import { OwnerRequest } from "../model/ownerRequest.modal.js";
 
 export const signIn = async (request, response, next) => {
     try {
@@ -19,15 +19,17 @@ export const signIn = async (request, response, next) => {
 }
 export const signUp = async (request, response, next) => {
     try {
+
         const errors = validationResult(request);
         if (!errors.isEmpty())
-            return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
+            return response.status(400).json({ error: "Bad requesttttttttttt", status: false, errors: errors.array() });
         const saltKey = await bcrypt.genSalt(10);
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
-        let user = await Admin.create({name:request.body.name, email: request.body.email, password: request.body.password, contact:request.body.contact,balance: request.body.balance });
+        let user = await Admin.create({ name: request.body.name, email: request.body.email, password: request.body.password, contact: request.body.contact, balance: 0 });
         return response.status(200).json({ message: "Signup success", user: user, status: true });
     }
     catch (err) {
+        console.log(err)
         return response.status(500).json({ error: "Internal Server Error", status: false });
     }
 }
@@ -35,7 +37,7 @@ export const signUp = async (request, response, next) => {
 export const viewBalance = async (request, response, next) => {
     try {
         let admin = await Admin.find({ email: request.body.email });
-            return admin?response.status(200).json({ balance: admin[0].balance, status: true }): response.status(500).json({ message: "wrong email password", status: false });
+        return admin ? response.status(200).json({ balance: admin[0].balance, status: true }) : response.status(500).json({ message: "wrong email password", status: false });
     } catch (err) {
         return response.status(500).json({ message: "internal server error", status: false });
     }
@@ -60,11 +62,13 @@ export const viewOwners = async (request, response, next) => {
 }
 
 export const changePassword = async (request, response, next) => {
-    console.log("hello")
+
     try {
         let admin = await Admin.findOne({ _id: request.body.id });
         if (admin) {
-            if (bcrypt.compare(request.body.currentPassword, admin.password)) {
+
+
+            if (await bcrypt.compare(request.body.currentPassword, admin.password)) {
                 var saltKey = await bcrypt.genSalt(10);
                 let password = await bcrypt.hash(request.body.newPassword, saltKey);
                 let admin = await Admin.updateOne({ _id: request.body.id }, { password });
@@ -81,6 +85,7 @@ export const changePassword = async (request, response, next) => {
 
 export const viewHouseRequest = async (request, response, next) => {
     try {
+
         let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
         return response.status(200).json({ requestList, status: true });
     } catch (error) {
@@ -108,5 +113,30 @@ export const removeTenant = async (request, response, next) => {
         return response.status(500).json({ message: "Internal server error", status: false });
 
     }
+
+}
+
+export const ownerRequest = async (request, response, next) => {
+    try {
+        let result = await OwnerRequest.create(request.body);
+        return response.status(200).json({ message: "request send successfully", status: true });
+    }
+    catch (err) {
+        return response.status(500).json({ message: "Internal server error", status: false });
+
+    }
+}
+
+export const requestRemove = async (request,response,next)=>{
+     try{
+        let result = await HouseRequest.findByIdAndDelete({_id:request.body.id});
+        return response.status(200).json({ message: "Accepted successfully", status: true });
+
+     }
+     catch(err){
+        console.log(err);
+        return response.status(500).json({ message: "Internal server error", status: false });
+
+     }
 
 }
