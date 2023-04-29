@@ -7,6 +7,7 @@ import { HouseRequest } from "../model/houseRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
 import db from "../database/database-connectivity.js";
+import { OwnerRequest } from "../model/ownerRequest.modal.js";
 
 
 export const signIn = async (request, response, next) => {
@@ -186,15 +187,15 @@ export const expireSubscription = async (request, response, next) => {
 }
 
 
-// export const houseRequestFromTenant = async (request, response, next) => {
-//     try {
-//         let response = await true.find({ userId: request.body.userId });
-//         if (response.data.status)
-//             return response.status(200).json({ message: "request is there", status: true });
+export const houseRequestFromTenant = async (request, response, next) => {
+    try {
+        let data = await OwnerRequest.find(request.body);
+        if (data)
+            return response.status(200).json({message:"success" , status:true,data});
 
-//         return response.status(200).json({ message: "something went wrong", status: true });
-//     } catch (error) {
-//         console.log(error);
-//         return response.status(500).json({ message: "internal server error ", status: false });
-//     }
-// }
+            return response.status(200).json({message:"wrong"});
+    } catch (error) {
+        console.log(error);
+        return response.status(200).json({message:"internal"});
+    }
+}
