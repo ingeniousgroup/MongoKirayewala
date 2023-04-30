@@ -46,7 +46,7 @@ export const viewProperty = async (request, response, next) => {
         let property = await Property.find({ userId: request.body.userId })
 
         if (property)
-            return response.status(200).json({ massage: "property shown success", status: true });
+            return response.status(200).json({ massage: "property shown success", status: true,property });
         else
             return response.status(400).json({ massage: "signin failed", status: false });
     }
@@ -169,7 +169,7 @@ export const addPropertyDetails = async (request, response, next) => {
 
 export const subscription = async (request, response, next) => {
     try {
-        let takeSubscription = Subscription.create({ userId: request.body.userId });
+        let takeSubscription = Subscription.create({ userId: request.body.userId ,subscriptionPrice:request.body.subscriptionPrice});
         if (takeSubscription)
             return response.status(200).json({ message: "subscription taken ", status: true });
         return response.status(400).json({ message: "something went wrong ", status: false });
@@ -189,13 +189,30 @@ export const expireSubscription = async (request, response, next) => {
 
 export const houseRequestFromTenant = async (request, response, next) => {
     try {
-        let data = await OwnerRequest.find(request.body);
-        if (data)
-            return response.status(200).json({message:"success" , status:true,data});
+        let result = await OwnerRequest.find(request.body);
+        if (result)
+            return response.status(200).json({message:"success" , status:true,result});
 
             return response.status(200).json({message:"wrong"});
     } catch (error) {
         console.log(error);
         return response.status(200).json({message:"internal"});
+    }
+}
+
+export const viewPropertyById = async (request, response, next) => {
+    try {
+
+        let result = await Property.find({ _id: request.body.propertyId })
+
+        if (result)
+            return response.status(200).json({ massage: "property found by its ID", status: true ,result});
+        else
+            return response.status(400).json({ massage: "somthing went wrong", status: false });
+    }
+    catch (err) {
+        console.log(err);
+
+        return response.status(500).json({ error: "Internal Server Error", status: false });
     }
 }

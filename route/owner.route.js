@@ -1,6 +1,6 @@
 import express from "express";
 
-import { signIn,signUp ,viewProperty ,updateProperty,houseRequestFromTenant, addPropertyDetails, owner_change_password,addProperty, owner_view_profile, viewEnquiry,subscription ,expireSubscription} from "../controller/owner.controller.js";
+import { signIn,signUp ,viewProperty ,updateProperty,houseRequestFromTenant, addPropertyDetails, owner_change_password,addProperty, owner_view_profile, viewEnquiry,subscription ,expireSubscription, viewPropertyById} from "../controller/owner.controller.js";
 import { body } from "express-validator";
 
 
@@ -42,4 +42,6 @@ router.post("/expireSubscription",expireSubscription);
 router.post("/propertyDetails" , addPropertyDetails);
 
 router.post("/houseRequestFromTenant",houseRequestFromTenant);
+
+router.post("/viewPropertyByItsId",viewPropertyById);
 export default router;
