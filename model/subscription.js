@@ -9,7 +9,7 @@ const subscriptionSchema = new mongoose.Schema({
     },
     subscriptionPrice:{
         type:Number,
-        default:499
+        required:true
     },
     startDate:{
         type:String,

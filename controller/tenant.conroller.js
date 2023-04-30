@@ -259,7 +259,15 @@ export const nearBy_house = async (request,response,next)=>{
 }
 
 
-
+export const viewPropertyList = async (request,response,next)=>{
+  try {
+    let property = await Property.find();   
+     return response.status(200).json({message:"Property Found",status:true,property})
+  } catch (err) {
+    console.log(err);
+     return response.status(500).json({message:"Internal Server Error",status:false})
+  }
+}
 
 
 

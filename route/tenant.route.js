@@ -37,7 +37,4 @@ router.post("/houseRequest",houseRequest);
 router.post("/search",searching);
 
 router.post("/profileVisit",visitCount);
-
-// router.get('/proertyList',viewPropertyList);
-
 export default router;
