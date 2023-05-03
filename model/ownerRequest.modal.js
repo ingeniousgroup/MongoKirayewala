@@ -8,6 +8,11 @@ const ownerRequestSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"property",
     },
+    ownerId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+
+    }
 
 });
 export const OwnerRequest = mongoose.model("ownerRequestByAdmin", ownerRequestSchema);
