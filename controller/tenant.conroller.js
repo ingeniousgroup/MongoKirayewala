@@ -166,6 +166,7 @@ export const houseRequest = async (request,response,next)=>{
     return response.status(200).json({message: "Request Send Successfully", req, status: true});
    }
    catch(err){
+    console.log(err);
      return response.status(500).json({error: "Internal Server Error", status: false});
    }
 }
