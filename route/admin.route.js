@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { viewBalance, signIn, signUp, viewOwners, viewTenants, changePassword, viewHouseRequest, removeOwner, removeTenant, ownerRequest, requestRemove } from "../controller/admin.controller.js";
+import { viewBalance, signIn, signUp, viewOwners, viewTenants, changePassword, viewHouseRequest, removeOwner, removeTenant, ownerRequest, requestRemove,  viewSubscription,} from "../controller/admin.controller.js";
 import  {stateCity }  from "../controller/stateCity.controller.js";
 const router = express.Router();
 router.post("/signup", body("email", "invalid email").isEmail(),
@@ -16,6 +16,9 @@ router.post("/remove_owner",removeOwner);
 router.post("/remove_tenant",removeTenant);
 router.post("/owner_request",ownerRequest);
 router.post("/remove_request",requestRemove);
-router.post("/state_city",stateCity)
+router.post("/state_city",stateCity);
+router.get("/view_subscription",viewSubscription);
+
 export default router;
+
 
