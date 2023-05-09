@@ -15,16 +15,12 @@ export const signIn = async (request,response,next)=>{
     if(!errors.isEmpty())
      return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
     let user = await User.findOne({email: request.body.email});
-
     let status = user ? await bcrypt.compare(request.body.password,user.password): false;
-
     if(status){
       let payload = {subject:request.body.email};
       let userToken = jwt.sign(payload,'afkkkdnkk');
     }
-    return status ? response.status(200).json({ message: 'Signin Success', status: true, user: {...user.toObject(),password: undefined}}) :
-             response.status(401).json({message: 'Unauthorized user', status: false});
-
+    return status ? response.status(200).json({ message: 'Signin Success', status: true, user: {...user.toObject(),password: undefined}}) : response.status(401).json({message: 'Unauthorized user', status: false});
   }
   catch(err){
     console.log(err);
@@ -64,10 +60,9 @@ export const viewProperty = async (request,response,next)=>{
 export const viewProfile = async (request,response,next)=>{
   try {
     let user = await User.findById(request.body.id);
-    console.log(user);
      return response.status(200).json({message:"User Found",status:true,user})
   } catch (err) {
-    console.log(err);
+     console.log(err);
      return response.status(500).json({message:"Internal Server Error",status:false})
   }
 }
@@ -111,9 +106,10 @@ export const addToWishList = async (request,response,next)=>{
     try{ 
      let wishList =  await WishList.findOne({userId: request.body.userId});
      if(wishList){
+      console.log(wishList.wishListItems);
         if(wishList.wishListItems.some((item)=>item.propertyId == request.body.propertyId))
-          return response.status(200).json({message: "Already added in WishList", status: true});
-        wishList.wishListItems.push({productId: request.body.productId});
+          return response.status(200).json({message: "Already added in WishList", status: false});
+        wishList.wishListItems.push({propertyId: request.body.propertyId});
         let saved = await wishList.save();
         return response.status(200).json({message: " House added in Wishlist", status: true});
      }
@@ -222,9 +218,10 @@ export const forgotPassword = async (request ,response , next) =>{
 }
 
 export const searching = (request,response,next)=>{
+  console.log(request.body);
   var regex = new RegExp(request.body.address,'i');
   Property.find({address:regex}).then(result=>{
-    return response.status(200).json({message:"Data Found", result, status:true})
+    return response.status(200).json({message:"Data Found", property:result, status:true})
   }).catch(err=>{
     console.log(err);
   });
@@ -236,12 +233,13 @@ export const visitCount = async(request,response,next)=>{
      if(pro){
        if(pro.visitedUser.find((user)=>user.userId==request.body.userId))
          return response.status(200).json({message:"user already visited",status: true});
+
       pro.houseVisitCount++;
       pro.visitedUser.push({userId:request.body.userId});
       await pro.save();
       return response.status(200).json({message:"Count ++",status:true,pro});
    }else{
-      await Engagement.create({
+      await Engagement.create({     
         propertyId : request.body.propertyId,
         visitedUser:[{userId : request.body.userId}],
         houseVisitCount : 1
@@ -253,13 +251,4 @@ export const visitCount = async(request,response,next)=>{
     return response.status(500).json({message:"Internal Server Error", status:false});
   }
 }
-
-export const nearBy_house = async (request,response,next)=>{
-  
-}
-
-
-
-
-
 
