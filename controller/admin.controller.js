@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
+import { request, response } from "express";
 
 
 export const signIn = async (request, response, next) => {
@@ -12,7 +13,7 @@ export const signIn = async (request, response, next) => {
         let user = await Admin.findOne({ email: request.body.email });
         let status = user ? await bcrypt.compare(request.body.password, user.password) : false;
         return status ? response.status(200).json({ message: 'Signin Success', status: true, user: { ...user.toObject(), password: undefined } }) :
-            response.status(401).json({ message: 'Unauthorized user', status: false});
+            response.status(401).json({ message: 'Unauthorized user', status: false });
     }
     catch (err) {
         console.log(err);
@@ -24,7 +25,7 @@ export const signUp = async (request, response, next) => {
 
         const errors = validationResult(request);
         if (!errors.isEmpty())
-            return response.status(400).json({ error: "Bad requesttttttttttt", status: false, errors: errors.array() });
+            return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
         const saltKey = await bcrypt.genSalt(10);
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
         let user = await Admin.create({ name: request.body.name, email: request.body.email, password: request.body.password, contact: request.body.contact, balance: 0 });
@@ -129,30 +130,44 @@ export const ownerRequest = async (request, response, next) => {
     }
 }
 
-export const requestRemove = async (request,response,next)=>{
-     try{
-        let result = await HouseRequest.findByIdAndDelete({_id:request.body.id});
+export const requestRemove = async (request, response, next) => {
+    try {
+        let result = await HouseRequest.findByIdAndDelete({ _id: request.body.id });
         let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
 
-        return response.status(200).json({requestList, status: true });
+        return response.status(200).json({ requestList, status: true });
 
-     }
-     catch(err){
+    }
+    catch (err) {
         console.log(err);
         return response.status(500).json({ message: "Internal server error", status: false });
 
-     }
+    }
 
 }
-export const viewSubscription= async(request,response)=>{
-      try {
-        let result= await Subscription.find().populate({path:"userId"});
-        
-        return response.status(200).json({ result:result, status: true });
+export const viewSubscription = async (request, response) => {
+    try {
+        let result = await Subscription.find().populate({ path: "userId" });
 
-      } catch (error) {
+        return response.status(200).json({ result: result, status: true });
+
+    } catch (error) {
         return response.status(500).json({ message: "Internal server error", status: false });
 
-      }
+    }
+}
+
+export const count = async (request, response) => {
+    try {
+        let countSubscripton = await Subscription.countDocuments();
+        let countOwner = await User.countDocuments({ role: 'Owner' });
+
+        let countTenant = await User.countDocuments({ role: 'Tenant' });
+
+        return response.status(200).json({ subscription: countSubscripton, tenant: countTenant, owner: countOwner, status: true });
+    } catch (error) {
+        return response.status(500).json({ message: "Internal server error", status: false });
+
+    }
 }
 
