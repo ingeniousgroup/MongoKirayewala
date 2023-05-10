@@ -1,6 +1,7 @@
 import express from "express";
-
-import { signIn,signUp ,viewProperty ,updateProperty,houseRequestFromTenant, addPropertyDetails, owner_change_password,addProperty, owner_view_profile, viewEnquiry,subscription ,expireSubscription, viewPropertyById} from "../controller/owner.controller.js";
+import multer from "multer";
+const upload = multer({dest:'public/upload'});
+import { signIn,signUp ,viewProperty ,updateProperty,houseRequestFromTenant, addPropertyDetails, owner_change_password,addProperty, owner_view_profile, viewEnquiry,subscription ,expireSubscription, viewPropertyById, removePropertyById, showSubscriptions, removePropertyDetailsById, removeTenantRequest} from "../controller/owner.controller.js";
 import { body } from "express-validator";
 
 
@@ -31,7 +32,7 @@ router.post("/owner_update_pass",owner_change_password);
 router.post("/ownerprofile",owner_view_profile);
 
 
-router.post("/addproperty",addProperty);
+router.post("/addproperty",upload.any("image"),addProperty);
 
 router.get("/viewenquiry",viewEnquiry);
 
@@ -44,4 +45,12 @@ router.post("/propertyDetails" , addPropertyDetails);
 router.post("/houseRequestFromTenant",houseRequestFromTenant);
 
 router.post("/viewPropertyByItsId",viewPropertyById);
+
+router.post("/removePropertyById",removePropertyById)
+
+router.post("/showSubscription",showSubscriptions);
+
+router.post("/removePropertyDetails",removePropertyDetailsById);
+
+router.post("/deleteTenantRequest",removeTenantRequest);
 export default router;
