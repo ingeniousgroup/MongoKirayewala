@@ -30,10 +30,12 @@ const propertySchema = new mongoose.Schema({
     },
     imagesUrlArray:[],
     latitude:{
-        type:String,
-        required:true
+        type:String
     },
     longitude:{
+        type:String
+    },
+    locationAddress:{
         type:String,
         required:true
     },

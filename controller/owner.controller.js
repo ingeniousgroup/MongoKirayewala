@@ -8,6 +8,9 @@ import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
 import db from "../database/database-connectivity.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
+import multer from "multer";
+import mongoose from "mongoose";
+const upload = multer({dest:'uploads/'});
 
 
 export const signIn = async (request, response, next) => {
@@ -46,7 +49,7 @@ export const viewProperty = async (request, response, next) => {
         let property = await Property.find({ userId: request.body.userId })
 
         if (property)
-            return response.status(200).json({ massage: "property shown success", status: true,property });
+            return response.status(200).json({ massage: "property shown success", status: true, property });
         else
             return response.status(400).json({ massage: "signin failed", status: false });
     }
@@ -141,11 +144,16 @@ export const viewEnquiry = async (request, response, next) => {
 }
 
 export const addProperty = async (request, response, next) => {
-    console.log(request.body);
+    let imagesUrlArray = [];
+    request.files.map((fileObject)=>{
+        imagesUrlArray.push(fileObject.filename)
+    })
+    const {userId,houseCategory,rent,status,balconies,carpetArea,floor,furnshing,noOfBathoom,otherRoom,address,description,locationAddress,latitude,longitue} = request.body;
     try {
-        let addproperty = await Property.create(request.body);
+        let addproperty = await Property.create({userId:userId,houseCategory:houseCategory,rent:rent,status:status,balconies:balconies,carpetArea:carpetArea,floor:floor,furnshing:furnshing,noOfBathoom:noOfBathoom,otherRoom:otherRoom,address:address,description:description,locationAddress:locationAddress,latitude:latitude,longitude:longitue,imagesUrlArray:imagesUrlArray});
         if (addproperty)
-            return response.status(200).json({ message: "property saved ", status: true });
+            return response.status(200).json({ message: "property saved ", status: true,addproperty});
+
 
         return response.status(400).json({ message: "something went wrong ", status: false });
     } catch (err) {
@@ -169,7 +177,7 @@ export const addPropertyDetails = async (request, response, next) => {
 
 export const subscription = async (request, response, next) => {
     try {
-        let takeSubscription = Subscription.create({ userId: request.body.userId ,subscriptionPrice:request.body.subscriptionPrice});
+        let takeSubscription = Subscription.create({ userId: request.body.userId, subscriptionPrice: request.body.subscriptionPrice });
         if (takeSubscription)
             return response.status(200).json({ message: "subscription taken ", status: true });
         return response.status(400).json({ message: "something went wrong ", status: false });
@@ -189,14 +197,14 @@ export const expireSubscription = async (request, response, next) => {
 
 export const houseRequestFromTenant = async (request, response, next) => {
     try {
-        let result = await OwnerRequest.find(request.body);
+        let result = await OwnerRequest.find({ ownerId: request.body.ownerId }).populate({path:'userId'}).populate({path:"propertyId"});
         if (result)
-            return response.status(200).json({message:"success" , status:true,result});
+            return response.status(200).json({ message: "success", status: true, result });
 
-            return response.status(200).json({message:"wrong"});
+        return response.status(200).json({ message: "wrong" });
     } catch (error) {
         console.log(error);
-        return response.status(200).json({message:"internal"});
+        return response.status(200).json({ message: "internal" });
     }
 }
 
@@ -206,9 +214,74 @@ export const viewPropertyById = async (request, response, next) => {
         let result = await Property.find({ _id: request.body.propertyId })
 
         if (result)
-            return response.status(200).json({ massage: "property found by its ID", status: true ,result});
+            return response.status(200).json({ massage: "property found by its ID", status: true, result });
         else
             return response.status(400).json({ massage: "somthing went wrong", status: false });
+    }
+    catch (err) {
+        console.log(err);
+
+        return response.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+
+export const removePropertyById = async (request, response, next) => {
+    console.log(request.body._id)
+    try {
+        let result = await Property.findOneAndDelete({ _id: request.body._id})
+        console.log(result)
+        if (result)
+            return response.status(200).json({ massage: "deleted successfully", status: true, result });
+
+        return response.status(400).json({ massage: "somthing went wrong", status: false });
+    }
+    catch (err) {
+        console.log(err);
+
+        return response.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+
+export const removePropertyDetailsById = async (request, response, next) => {
+    try {
+        let result = await db.collection("propertyDetails").deleteOne({ propertyID :request.body.propertyID })
+        console.log(result);
+        if (result)
+            return response.status(200).json({ massage: "details of property deleted successfully", status: true});
+
+        return response.status(400).json({ massage: "somthing went wrong", status: false });
+    }
+    catch (err) {
+        console.log(err);
+
+        return response.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+
+export const showSubscriptions = async (request, response, next) => {
+    try {
+        let subscriptionList = await Subscription.findOne({ userId: request.body.userId });
+        if (subscriptionList)
+            return response.status(200).json({ message: "subscription is here", status: true, subscriptionList });
+
+
+        return response.status(200).json({ massage: "please take subscription first", status: false });
+    } catch (error) {
+        console.log(error);
+
+        return response.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+
+
+export const removeTenantRequest = async (request, response, next) => {
+    console.log(request.body);
+    try {
+        let result = await OwnerRequest.findOneAndDelete({ _id :request.body.id});
+        if (result)
+            return response.status(200).json({ massage: "tenant request deleted...", status: true});
+
+        return response.status(400).json({ massage: "somthing went wrong", status: false });
     }
     catch (err) {
         console.log(err);
