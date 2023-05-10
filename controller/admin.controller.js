@@ -4,13 +4,15 @@ import bcrypt from "bcryptjs";
 import { validationResult } from "express-validator";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
+import { Subscription } from "../model/subscription.js";
+
 
 export const signIn = async (request, response, next) => {
     try {
         let user = await Admin.findOne({ email: request.body.email });
         let status = user ? await bcrypt.compare(request.body.password, user.password) : false;
         return status ? response.status(200).json({ message: 'Signin Success', status: true, user: { ...user.toObject(), password: undefined } }) :
-            response.status(401).json({ message: 'Unauthorized user', status: false });
+            response.status(401).json({ message: 'Unauthorized user', status: false});
     }
     catch (err) {
         console.log(err);
@@ -130,7 +132,9 @@ export const ownerRequest = async (request, response, next) => {
 export const requestRemove = async (request,response,next)=>{
      try{
         let result = await HouseRequest.findByIdAndDelete({_id:request.body.id});
-        return response.status(200).json({ message: "Accepted successfully", status: true });
+        let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
+
+        return response.status(200).json({requestList, status: true });
 
      }
      catch(err){
@@ -140,3 +144,15 @@ export const requestRemove = async (request,response,next)=>{
      }
 
 }
+export const viewSubscription= async(request,response)=>{
+      try {
+        let result= await Subscription.find().populate({path:"userId"});
+        
+        return response.status(200).json({ result:result, status: true });
+
+      } catch (error) {
+        return response.status(500).json({ message: "Internal server error", status: false });
+
+      }
+}
+
