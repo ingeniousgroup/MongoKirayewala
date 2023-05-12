@@ -4,8 +4,8 @@ import { viewBalance, signIn, signUp, viewOwners, viewTenants, changePassword, v
 import  {stateCity }  from "../controller/stateCity.controller.js";
 const router = express.Router();
 router.post("/signup", body("email", "invalid email").isEmail(),
-    body("password", "must be 5 character and numeric").isNumeric().isLength({ min: 5 }),
-    body("contact","must be 10digit ").isNumeric().isLength({min:10}),
+    body("password", "must be strong").isLength({ min: 5 }),
+    body("contact","must be 10 digit ").isNumeric().isLength({min:10}),
     signUp);
 router.post("/signin", signIn);
 router.post("/view_balance", viewBalance);
