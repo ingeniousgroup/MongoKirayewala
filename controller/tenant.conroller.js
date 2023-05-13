@@ -7,6 +7,7 @@ import { WishList } from "../model/wishList.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import nodemailer from "nodemailer";
 import { Engagement } from "../model/engagement.js";
+import { request } from "express";
 
 
 export const signIn = async (request,response,next)=>{
@@ -263,3 +264,36 @@ export const viewPropertyList = async (request,response,next)=>{
   }
 }
 
+export const sendOtp = async(request,response,next)=>{
+  try{
+    console.log(request.body)
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+            user: 'rajputmohit2134@gmail.com',
+            pass: 'drxyrqbrxikerqfn'
+            }
+        }); 
+
+        var mailOptions = {
+            from: 'rajputmohit2134@gmail.com',
+            to: request.body.email,
+            subject: 'Sending Email using Node.js',
+            html: '<p> Kiraye Wala ..!<br/>This is your  Otp<br/>'+request.body.otp+'</p>'
+        };
+      
+         transporter.sendMail(mailOptions, function(error, info){
+            if (error)
+            console.log(error);
+            else 
+            console.log('Email sent: ' + info.response);
+        });
+    
+    return response.status(200).json({message:"Otp Send successfully",status:true});
+    }
+    catch(err){
+        console.log(err);
+        return response.status(500).json({err:"internal server error",status:false});
+    }
+
+}
