@@ -4,6 +4,7 @@ import AdminRouter from "./route/admin.route.js"
 import OwnerRouter from "./route/owner.route.js"
 import TenantRouter from "./route/tenant.route.js";
 import PropertyRouter from "./route/property.route.js";
+import Payement from './route/Payement.route.js';
 import multer from "multer";
 const upload = multer({dest:'uploads/'});
 import cors from "cors";
@@ -25,7 +26,7 @@ app.use("/admin",AdminRouter);
 app.use("/tenant",TenantRouter);
 app.use("/owner",OwnerRouter);
 app.use("/property",PropertyRouter);
-
+app.use("/payment",Payement);
 app.listen(3000,()=>{
    console.log("server Started");
 });
