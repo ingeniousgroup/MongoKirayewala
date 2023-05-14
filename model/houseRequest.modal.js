@@ -14,7 +14,10 @@ const houseRequestSchema = new mongoose.Schema({
     message:{
         type:String
     },
-
+    ownerId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user",
+    },
     status:{
      type:Boolean,
      default:true
