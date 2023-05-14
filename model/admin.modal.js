@@ -3,21 +3,23 @@ import mongoose from "mongoose";
 const adminSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim : true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        trim : true
     },
     password:{
         type:String,
-        required:true
+        required:true,
+        trim : true
     },
     contact: {
-        type: Number
-        ,
-        required: true
-
+        type: Number,
+        required: true,
+        trim : true
     },
     balance: {
         type: Number,

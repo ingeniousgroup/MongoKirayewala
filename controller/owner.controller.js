@@ -6,7 +6,7 @@ import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
-import db from "../database/database-connectivity.js";
+// import db from "../database/database-connectivity.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import multer from "multer";
 import mongoose from "mongoose";

@@ -195,7 +195,7 @@ export const forgotPassword = async (request ,response , next) =>{
         var mailOptions = {
             from: 'rajputmohit2134@gmail.com',
             to: user.email,
-            subject: 'Sending Email using Node.js',
+            subject: 'User verification From Kirayewala',
             html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+htmlPass+'</p>'
         };
       

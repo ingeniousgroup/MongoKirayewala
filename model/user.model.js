@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
 
     password:{
     type: String,
-    required: true
+    required: true,
+    trim : true
     },
 
     contact:{
@@ -27,7 +28,8 @@ const userSchema = new mongoose.Schema({
 
     role : {
      type: String,
-     required:true
+     required:true,
+     trim : true
     },
 
     longitude:Number,
