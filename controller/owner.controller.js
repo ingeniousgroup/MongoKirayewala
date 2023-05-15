@@ -6,7 +6,7 @@ import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
-import db from "../database/database-connectivity.js";
+// import db from "../database/database-connectivity.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import multer from "multer";
 import mongoose from "mongoose";
@@ -29,6 +29,7 @@ export const signIn = async (request, response, next) => {
 
 export const signUp = async (request, response, next) => {
     try {
+        console.log(request.body);
         const errors = validationResult(request);
         if (!errors.isEmpty())
             return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
@@ -36,6 +37,7 @@ export const signUp = async (request, response, next) => {
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
 
         let user = await User.create(request.body);
+        console.log(user);
         return response.status(200).json({ message: "Signup success", user: user, status: true });
     }
     catch (err) {
