@@ -154,12 +154,14 @@ export const removeFromWishList = async (request,response,next)=>{
 }
 
 export const houseRequest = async (request,response,next)=>{
+  console.log(request.body);
   try{ 
     const errors = validationResult(request);
     if(!errors.isEmpty())
       return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
    
     let req = await HouseRequest.create(request.body);
+    console.log(req);
     return response.status(200).json({message: "Request Send Successfully", req, status: true});
    }
    catch(err){
@@ -279,7 +281,7 @@ export const sendOtp = async(request,response,next)=>{
             from: 'rajputmohit2134@gmail.com',
             to: request.body.email,
             subject: 'Sending Email using Node.js',
-            html: '<p> Kiraye Wala ..!<br/>This is your  Otp<br/>'+request.body.otp+'</p>'
+            html: '<p> Kiraye Wala ..!<br/>'+request.body.otp+'</p>'
         };
       
          transporter.sendMail(mailOptions, function(error, info){

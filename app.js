@@ -4,6 +4,8 @@ import AdminRouter from "./route/admin.route.js"
 import OwnerRouter from "./route/owner.route.js"
 import TenantRouter from "./route/tenant.route.js";
 import PropertyRouter from "./route/property.route.js";
+import Payement from './route/Payement.route.js';
+import UserRouter from './route/user.route.js';
 import multer from "multer";
 import cors from "cors";
 import path from "path";
@@ -23,6 +25,8 @@ app.use("/admin",AdminRouter);
 app.use("/tenant",TenantRouter);
 app.use("/owner",OwnerRouter);
 app.use("/property",PropertyRouter);
+app.use("/payment",Payement);
+app.use('/user',UserRouter);
 app.listen(3000,()=>{
    console.log("server Started");
 });
