@@ -1,6 +1,6 @@
-import { request } from "express";
+import { request, response } from "express";
 import { Property } from "../model/property.modal.js";
-
+import db from "../database/database-connectivity.js";
 export const  List = async (request,response,next)=>{
     try {
       let property = await Property.find();   
@@ -53,5 +53,16 @@ export const categoryCount = async(request,response,next)=>{
   } catch (err) {
     console.log(err);
      return response.status(500).json({message:"Internal Server Error",status:false})
+  }
+}
+
+export const propertyDetails = async(request,response,next)=>{
+  try {
+    console.log(request.body)
+    let result = await db.collection("propertyDetails").findOne({ propertyID :request.body.propertyId });
+    return result ? response.status(200).json({message:"Property Found",status:true,propertyDetails:result}) : response.status(400).json({message:"Bad request Error",status:false});
+  } catch (err) {
+    console.log(err);
+    return response.status(500).json({message:"Internal Server Error",status:false})
   }
 }
