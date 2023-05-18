@@ -171,3 +171,20 @@ export const count = async (request, response) => {
     }
 }
 
+export const searching = async (request, response, next) => {
+ 
+
+    try {
+        let searchdata = await User.find({ $or: [{ name: { $regex: request.body.data } }, { email: { $regex: request.body.data } }, { role: request.body.data }] });
+
+        return response.status(200).json({ searchdata, status: true });
+
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ message: "Internal server error", status: false });
+
+
+    }
+}
+
