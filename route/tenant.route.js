@@ -1,5 +1,5 @@
 import express from "express";
-import { addToWishList, changePassword, forgotPassword, houseRequest, removeFromWishList, searching, sendOtp, signIn, signUp, updateProfile, viewProfile, viewProperty, viewWistlist,  visitCount} from "../controller/tenant.conroller.js";
+import { addToWishList, changePassword, forgotPassword, houseRequest, removeFromWishList, requestList, requestPropertyList, searching, searchingWithCategory, sendOtp, signIn, signUp, updateProfile, viewProfile, viewProperty, viewWistlist,  visitCount} from "../controller/tenant.conroller.js";
 import { body } from "express-validator";
 
 const router = express.Router();
@@ -36,7 +36,14 @@ router.post("/houseRequest",houseRequest);
 
 router.post("/search",searching);
 
+router.post("/searchWithCategory",searchingWithCategory);
+
 router.post("/profileVisit",visitCount);
 
 router.post("/sendOtp",sendOtp);
+
+router.post("/requestList",requestList);
+
+router.post("/requestPropertyList",requestPropertyList);
+
 export default router;
