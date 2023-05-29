@@ -6,7 +6,7 @@ import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
-// import db from "../database/database-connectivity.js";
+import db from "../database/database-connectivity.js"
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import multer from "multer";
 import mongoose from "mongoose";
@@ -297,7 +297,7 @@ export const showSubscriptions = async (request, response, next) => {
 export const removeTenantRequest = async (request, response, next) => {
     console.log(request.body);
     try {
-        let result = await OwnerRequest.findOneAndDelete({ _id :request.body.id});
+        let result = await HouseRequest.findOneAndDelete({ _id :request.body.id});
         if (result)
             return response.status(200).json({ massage: "tenant request deleted...", status: true});
 
@@ -343,6 +343,26 @@ export const findAdmin = async (request, response, next) => {
     catch (err) {
         console.log(err);
 
+        return response.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+
+
+export const findPropertyByFurnishing = async(request, response, next) => {
+    let propertyDetails = [];
+    try {
+        let result = await db.collection("propertyDetails").find({furnshing:request.body.category}).toArray();
+        for(let details of result){
+            let property = await Property.find({_id:details.propertyID});
+            propertyDetails = [...propertyDetails,{property,details}];
+        }
+        if (propertyDetails)
+            return response.status(200).json({ massage: "furnished data found", status: true ,propertyDetails});
+
+        return response.status(400).json({ massage: "somthing went wrong", status: false });
+    }
+    catch (err) {
+        console.log(err);
         return response.status(500).json({ error: "Internal Server Error", status: false });
     }
 }
