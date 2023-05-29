@@ -22,6 +22,7 @@ export const signUp = async (request, response, next) => {
     try {
 
         const errors = validationResult(request);
+        console.log(errors);
         if (!errors.isEmpty())
             return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
         const saltKey = await bcrypt.genSalt(10);
