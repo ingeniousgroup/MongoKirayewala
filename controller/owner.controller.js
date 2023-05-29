@@ -6,10 +6,11 @@ import { Property } from "../model/property.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import today from "../date.js";
-import db from "../database/database-connectivity.js";
+// import db from "../database/database-connectivity.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import multer from "multer";
 import mongoose from "mongoose";
+import { Admin } from "../model/admin.modal.js";
 const upload = multer({dest:'uploads/'});
 
 
@@ -27,14 +28,18 @@ export const signIn = async (request, response, next) => {
 }
 
 export const signUp = async (request, response, next) => {
+    console.log("Body : "+request.body);
     try {
         const errors = validationResult(request);
         if (!errors.isEmpty())
             return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
+        console.log("Yaha pe aa gya");
         const saltKey = await bcrypt.genSalt(10);
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
-
+        console.log("Yaha pe aa gya 2");
         let user = await User.create(request.body);
+        console.log("Yaha pe aa gya 3");
+        console.log(user);
         return response.status(200).json({ message: "Signup success", user: user, status: true });
     }
     catch (err) {
@@ -208,6 +213,21 @@ export const houseRequestFromTenant = async (request, response, next) => {
     }
 }
 
+export const houseRequestFromTenantWithoutAdmin = async (request, response, next) => {
+    try {
+        let result = await HouseRequest.find({ ownerId: request.body.ownerId }).populate({path:'userId'}).populate({path:"propertyId"});
+        if (result){
+            return response.status(200).json({ message: "success", status: true, result });
+        }
+            
+
+        return response.status(200).json({ message: "wrong" });
+    } catch (error) {
+        console.log(error);
+        return response.status(200).json({ message: "internal" });
+    }
+}
+
 export const viewPropertyById = async (request, response, next) => {
     try {
 
@@ -280,6 +300,43 @@ export const removeTenantRequest = async (request, response, next) => {
         let result = await OwnerRequest.findOneAndDelete({ _id :request.body.id});
         if (result)
             return response.status(200).json({ massage: "tenant request deleted...", status: true});
+
+        return response.status(400).json({ massage: "somthing went wrong", status: false });
+    }
+    catch (err) {
+        console.log(err);
+
+        return response.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+
+
+export const updateBalance = async (request, response, next) => {
+    try {
+        let result = await Admin.updateOne(
+            {
+                email: "riya@gmail.com"
+
+            },
+            {
+                balance:request.body.balance
+            }
+        );
+        return response.status(200).json({ message: "successfully credited to the admin account .....", result, status: true });
+
+    }
+    catch (err) {
+        return response.status(500).json({ message: "internal server error", status: false });
+
+    }
+}
+
+
+export const findAdmin = async (request, response, next) => {
+    try {
+        let result = await Admin.find({email :'riya@gmail.com'});
+        if (result)
+            return response.status(200).json({ massage: "find admin data", status: true ,result});
 
         return response.status(400).json({ massage: "somthing went wrong", status: false });
     }

@@ -7,6 +7,7 @@ import { WishList } from "../model/wishList.modal.js";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import nodemailer from "nodemailer";
 import { Engagement } from "../model/engagement.js";
+import { request } from "express";
 
 
 export const signIn = async (request,response,next)=>{
@@ -143,7 +144,7 @@ export const removeFromWishList = async (request,response,next)=>{
     if(wishList){
        wishList.wishListItems.splice(wishList.wishListItems.findIndex(item => item._id == request.body.propertyId),1);
        let saved = await wishList.save();
-      return response.status(200).json({message: "Remove From WishList", status: true, saved});
+      return response.status(200).json({message: "Remove From WishList", status: true});
     }else
       return response.status(401).json({message:"Bad Request Error" , status : false});
    }catch(err){
@@ -153,12 +154,14 @@ export const removeFromWishList = async (request,response,next)=>{
 }
 
 export const houseRequest = async (request,response,next)=>{
+  console.log("in house request.........")
   try{ 
     const errors = validationResult(request);
     if(!errors.isEmpty())
       return response.status(400).json({error: "Bad request", status: false, errors: errors.array()});
    
     let req = await HouseRequest.create(request.body);
+    console.log(req);
     return response.status(200).json({message: "Request Send Successfully", req, status: true});
    }
    catch(err){
@@ -194,7 +197,7 @@ export const forgotPassword = async (request ,response , next) =>{
         var mailOptions = {
             from: 'rajputmohit2134@gmail.com',
             to: user.email,
-            subject: 'Sending Email using Node.js',
+            subject: 'User verification From Kirayewala',
             html: '<p> Kiraye Wala ..!<br/>This is your Temprory password<br/>'+htmlPass+'</p>'
         };
       
@@ -263,3 +266,55 @@ export const viewPropertyList = async (request,response,next)=>{
   }
 }
 
+export const sendOtp = async(request,response,next)=>{
+  try{
+    console.log(request.body)
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+            user: 'rajputmohit2134@gmail.com',
+            pass: 'drxyrqbrxikerqfn'
+            }
+        }); 
+
+        var mailOptions = {
+            from: 'rajputmohit2134@gmail.com',
+            to: request.body.email,
+            subject: 'Sending Email using Node.js',
+            html: '<p> Kiraye Wala ..!<br/>'+request.body.otp+'</p>'
+        };
+      
+         transporter.sendMail(mailOptions, function(error, info){
+            if (error)
+            console.log(error);
+            else 
+            console.log('Email sent: ' + info.response);
+        });
+    
+    return response.status(200).json({message:"Otp Send successfully",status:true});
+    }
+    catch(err){
+        console.log(err);
+        return response.status(500).json({err:"internal server error",status:false});
+    }
+}
+
+export const requestList = async(request,response,next)=>{
+   try {
+    let list = await HouseRequest.find({userId:request.body.userId});
+    return response.status(200).json({message:"List Found Succecfully",list,status:true});
+   } catch (err) {
+    console.log(err);
+    return response.status(500).json({err:"internal server error",status:false});
+   }
+}
+
+export const requestPropertyList = (request,response,next)=>{
+  HouseRequest.find({userId: request.body.userId})
+  .populate("houseRequest.propertyId").then(result=>{
+      return response.status(200).json(result);
+  }).catch(err=>{
+      console.log(err);
+      return response.status(500).json({error: "Internal server error"});
+  })
+}

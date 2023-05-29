@@ -6,8 +6,6 @@ import { HouseRequest } from "../model/houseRequest.modal.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
 import { request, response } from "express";
-
-
 export const signIn = async (request, response, next) => {
     try {
         let user = await Admin.findOne({ email: request.body.email });
