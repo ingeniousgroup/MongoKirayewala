@@ -364,3 +364,19 @@ export const findPropertyByFurnishing = async(request, response, next) => {
         return response.status(500).json({ error: "Internal Server Error", status: false });
     }
 }
+
+export const propertyBy = async (request, response, next) => {
+    console.log(request.body);
+    try {
+        let result = await Property.find({houseCategory:request.body.category});
+        if (result){
+            return response.status(200).json({ message: "success", status: true, result });
+        }
+            
+
+        return response.status(200).json({ message: "wrong" });
+    } catch (error) {
+        console.log(error);
+        return response.status(200).json({ message: "internal" });
+    }
+}
