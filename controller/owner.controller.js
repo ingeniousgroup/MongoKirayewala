@@ -28,15 +28,17 @@ export const signIn = async (request, response, next) => {
 }
 
 export const signUp = async (request, response, next) => {
+    console.log("Body : "+request.body);
     try {
-        console.log(request.body);
         const errors = validationResult(request);
         if (!errors.isEmpty())
             return response.status(400).json({ error: "Bad request", status: false, errors: errors.array() });
+        console.log("Yaha pe aa gya");
         const saltKey = await bcrypt.genSalt(10);
         request.body.password = await bcrypt.hash(request.body.password, saltKey);
-
+        console.log("Yaha pe aa gya 2");
         let user = await User.create(request.body);
+        console.log("Yaha pe aa gya 3");
         console.log(user);
         return response.status(200).json({ message: "Signup success", user: user, status: true });
     }

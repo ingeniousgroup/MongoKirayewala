@@ -14,6 +14,7 @@ import mongoose from "mongoose";
 import db from "./database/database-connectivity.js";
 const upload = multer({dest:'uploads/'});
 const app = express();
+// mongoose.connect("mongodb+srv://theingeious:pRbFe82Vp0Rw1mxE@kirayewala.vwavihw.mongodb.net/kirayewalaApi?retryWrites=true&w=majority").then(()=>console.log("Database Connected...")).catch((err)=>console.log(err));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));

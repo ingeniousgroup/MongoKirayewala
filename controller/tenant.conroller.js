@@ -112,14 +112,14 @@ export const addToWishList = async (request,response,next)=>{
           return response.status(200).json({message: "Already added in WishList", status: false});
         wishList.wishListItems.push({propertyId: request.body.propertyId});
         let saved = await wishList.save();
-        return response.status(200).json({message: " House added in Wishlist", status: true});
+        return response.status(200).json({message: " House added in Wishlist", status: true ,propertyList:saved});
      }
      else{
        let saved = await WishList.create({
            userId: request.body.userId,
            wishListItems:[{propertyId: request.body.propertyId}]
        });
-       return response.status(200).json({message: "House added successfully", status: true});
+       return response.status(200).json({ propertyList:saved,message: "House added successfully", saved, status: true});
      }
     }
     catch(err){
@@ -144,7 +144,7 @@ export const removeFromWishList = async (request,response,next)=>{
     if(wishList){
        wishList.wishListItems.splice(wishList.wishListItems.findIndex(item => item._id == request.body.propertyId),1);
        let saved = await wishList.save();
-      return response.status(200).json({message: "Remove From WishList", status: true, saved});
+      return response.status(200).json({propertyList:saved, message: "Remove From WishList", status: true});
     }else
       return response.status(401).json({message:"Bad Request Error" , status : false});
    }catch(err){
@@ -154,7 +154,7 @@ export const removeFromWishList = async (request,response,next)=>{
 }
 
 export const houseRequest = async (request,response,next)=>{
-  console.log(request.body);
+  console.log("in house request.........")
   try{ 
     const errors = validationResult(request);
     if(!errors.isEmpty())
@@ -225,6 +225,7 @@ export const searching = (request,response,next)=>{
   console.log(request.body);
   var regex = new RegExp(request.body.address,'i');
   Property.find({address:regex}).then(result=>{
+    console.log(result)
     return response.status(200).json({message:"Data Found", property:result, status:true})
   }).catch(err=>{
     console.log(err);
@@ -297,5 +298,35 @@ export const sendOtp = async(request,response,next)=>{
         console.log(err);
         return response.status(500).json({err:"internal server error",status:false});
     }
+}
 
+export const requestList = async(request,response,next)=>{
+   try {
+    let list = await HouseRequest.find({userId:request.body.userId});
+    return response.status(200).json({message:"List Found Succecfully",list,status:true});
+   } catch (err) {
+    console.log(err);
+    return response.status(500).json({err:"internal server error",status:false});
+   }
+}
+
+export const requestPropertyList = (request,response,next)=>{
+  HouseRequest.find({userId: request.body.userId})
+  .populate("houseRequest.propertyId").then(result=>{
+      return response.status(200).json(result);
+  }).catch(err=>{
+      console.log(err);
+      return response.status(500).json({error: "Internal server error"});
+  })
+}
+
+export const searchingWithCategory = (request,response,next)=>{
+  console.log(request.body);
+  var regex = new RegExp(request.body.address,'i');
+  Property.find({address:regex,houseCategory:request.body.category}).then(result=>{
+    console.log(result)
+    return response.status(200).json({message:"Data Found", property:result, status:true})
+  }).catch(err=>{
+    console.log(err);
+  });
 }
