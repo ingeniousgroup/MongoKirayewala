@@ -366,3 +366,16 @@ export const findPropertyByFurnishing = async(request, response, next) => {
         return response.status(500).json({ error: "Internal Server Error", status: false });
     }
 }
+
+export const requestUpdate =async(request,response,next)=>{
+    try {
+        const update=await HouseRequest.findByIdAndUpdate({_id:request.body._id},{status:request.body.status});
+        if(update)
+        return response.status(200).json({message:"update successfully"});
+        return response.status(404).json({message:"something went wrong"});
+     
+    } catch (error) {
+        return response.status(404).json({message:"internal server errror"});
+
+    }
+}

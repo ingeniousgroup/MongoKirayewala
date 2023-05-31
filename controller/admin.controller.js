@@ -5,7 +5,7 @@ import { validationResult } from "express-validator";
 import { HouseRequest } from "../model/houseRequest.modal.js";
 import { OwnerRequest } from "../model/ownerRequest.modal.js";
 import { Subscription } from "../model/subscription.js";
-import { request, response } from "express";
+
 export const signIn = async (request, response, next) => {
     try {
         let user = await Admin.findOne({ email: request.body.email });
@@ -20,7 +20,6 @@ export const signIn = async (request, response, next) => {
 }
 export const signUp = async (request, response, next) => {
     try {
-
         const errors = validationResult(request);
         console.log(errors);
         if (!errors.isEmpty())
@@ -68,8 +67,6 @@ export const changePassword = async (request, response, next) => {
     try {
         let admin = await Admin.findOne({ _id: request.body.id });
         if (admin) {
-
-
             if (await bcrypt.compare(request.body.currentPassword, admin.password)) {
                 var saltKey = await bcrypt.genSalt(10);
                 let password = await bcrypt.hash(request.body.newPassword, saltKey);
@@ -87,7 +84,6 @@ export const changePassword = async (request, response, next) => {
 
 export const viewHouseRequest = async (request, response, next) => {
     try {
-
         let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
         return response.status(200).json({ requestList, status: true });
     } catch (error) {
@@ -95,6 +91,8 @@ export const viewHouseRequest = async (request, response, next) => {
     }
 
 }
+
+
 export const removeOwner = async (request, response, next) => {
     try {
         let result = await User.findOneAndRemove({ _id: request.body.id });
@@ -104,8 +102,9 @@ export const removeOwner = async (request, response, next) => {
         return response.status(500).json({ message: "Internal server error", status: false });
 
     }
-
 }
+
+
 export const removeTenant = async (request, response, next) => {
     try {
         let result = await User.findOneAndRemove({ _id: request.body.id, role: request.body.role });
@@ -115,7 +114,6 @@ export const removeTenant = async (request, response, next) => {
         return response.status(500).json({ message: "Internal server error", status: false });
 
     }
-
 }
 
 export const ownerRequest = async (request, response, next) => {
@@ -133,14 +131,12 @@ export const requestRemove = async (request, response, next) => {
     try {
         let result = await HouseRequest.findByIdAndDelete({ _id: request.body.id });
         let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
-
         return response.status(200).json({ requestList, status: true });
 
     }
     catch (err) {
         console.log(err);
         return response.status(500).json({ message: "Internal server error", status: false });
-
     }
 
 }
@@ -160,30 +156,20 @@ export const count = async (request, response) => {
     try {
         let countSubscripton = await Subscription.countDocuments();
         let countOwner = await User.countDocuments({ role: 'Owner' });
-
         let countTenant = await User.countDocuments({ role: 'Tenant' });
-
         return response.status(200).json({ subscription: countSubscripton, tenant: countTenant, owner: countOwner, status: true });
     } catch (error) {
         return response.status(500).json({ message: "Internal server error", status: false });
-
     }
 }
 
 export const searching = async (request, response, next) => {
- 
-
     try {
         let searchdata = await User.find({ $or: [{ name: { $regex: request.body.data } }, { email: { $regex: request.body.data } }, { role: request.body.data }] });
-
         return response.status(200).json({ searchdata, status: true });
-
-
     } catch (error) {
         console.log(error);
         return response.status(500).json({ message: "Internal server error", status: false });
-
-
     }
 }
 
