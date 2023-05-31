@@ -315,7 +315,7 @@ export const updateBalance = async (request, response, next) => {
     try {
         let result = await Admin.updateOne(
             {
-                email: "riya@gmail.com"
+                email: "ritu@gmail.com"
 
             },
             {
