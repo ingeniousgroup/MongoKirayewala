@@ -367,18 +367,15 @@ export const findPropertyByFurnishing = async(request, response, next) => {
     }
 }
 
-export const propertyBy = async (request, response, next) => {
-    console.log(request.body);
+export const requestUpdate =async(request,response,next)=>{
     try {
-        let result = await Property.find({houseCategory:request.body.category});
-        if (result){
-            return response.status(200).json({ message: "success", status: true, result });
-        }
-            
-
-        return response.status(200).json({ message: "wrong" });
+        const update=await HouseRequest.findByIdAndUpdate({_id:request.body._id},{status:request.body.status});
+        if(update)
+        return response.status(200).json({message:"update successfully"});
+        return response.status(404).json({message:"something went wrong"});
+     
     } catch (error) {
-        console.log(error);
-        return response.status(200).json({ message: "internal" });
+        return response.status(404).json({message:"internal server errror"});
+
     }
 }

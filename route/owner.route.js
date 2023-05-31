@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 const upload = multer({dest:'public/upload'});
-import { signIn,signUp ,viewProperty ,updateProperty,houseRequestFromTenant, addPropertyDetails, owner_change_password,addProperty, owner_view_profile, viewEnquiry,subscription ,expireSubscription, viewPropertyById, removePropertyById, showSubscriptions, removePropertyDetailsById, removeTenantRequest, updateBalance, findAdmin, houseRequestFromTenantWithoutAdmin, findPropertyByFurnishing, propertyBy} from "../controller/owner.controller.js";
+import { signIn,signUp ,viewProperty ,updateProperty,houseRequestFromTenant, addPropertyDetails, owner_change_password,addProperty, owner_view_profile, viewEnquiry,subscription ,expireSubscription, viewPropertyById, removePropertyById, showSubscriptions, removePropertyDetailsById, removeTenantRequest, updateBalance, findAdmin, houseRequestFromTenantWithoutAdmin, findPropertyByFurnishing} from "../controller/owner.controller.js";
 import { body } from "express-validator";
 
 
@@ -61,8 +61,4 @@ router.post("/viewAdmin",findAdmin);
 router.post("/request",houseRequestFromTenantWithoutAdmin);
 
 router.post("/findPropertyByCategory",findPropertyByFurnishing);
-
-router.post("/findByCategory",propertyBy);
-
-
 export default router;
