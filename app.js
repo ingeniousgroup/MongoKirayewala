@@ -16,6 +16,7 @@ import env from "dotenv";
 const upload = multer({dest:'uploads/'});
 const app = express();
 env.config();
+process.env;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
