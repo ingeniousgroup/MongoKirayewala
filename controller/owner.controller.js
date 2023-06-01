@@ -379,3 +379,18 @@ export const requestUpdate =async(request,response,next)=>{
 
     }
 }
+
+export const findByCategoryProperty = async(request,response,next)=>{
+    console.log(request.body);
+    try {
+        await Property.find({houseCategory:request.body.category}).then(result=>{
+            return response.status(200).json({result});
+        }).catch(err=>{
+            return response.status(401).json({message:"something went wrong"});
+        })
+     
+    } catch (error) {
+        return response.status(404).json({message:"internal server errror"});
+
+    }
+}
