@@ -6,11 +6,9 @@ export const userCheck = async (request,response,next)=>{
         const data = await User.findOne({email : request.body.email});
         if(!data?.email)
             {
-                console.log('Yaha pe aa gya...');
                 if(request.body.status)
                 {
-                    console.log('Yaha pe aa gya...2');
-                    email(request.body.email,"User verification from Kirayewala",request.body.name,request.body.otp);
+                    email(request.body.email,"User verification from Kirayewala",request.body.name,request.body.newOtp);
                 }
             }
         data?.email ?  response.status(200).json({user:data,status : false}) : response.status(200).json({message : 'You can register now...',status : true});
