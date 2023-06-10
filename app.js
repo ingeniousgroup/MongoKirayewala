@@ -12,9 +12,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import db from "./database/database-connectivity.js";
+import env from "dotenv";
 const upload = multer({dest:'uploads/'});
 const app = express();
-// mongoose.connect("mongodb+srv://theingeious:pRbFe82Vp0Rw1mxE@kirayewala.vwavihw.mongodb.net/kirayewalaApi?retryWrites=true&w=majority").then(()=>console.log("Database Connected...")).catch((err)=>console.log(err));
+env.config();
+process.env;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -28,4 +30,4 @@ app.use("/payment",Payement);
 app.use('/user',UserRouter);
 app.listen(3000,()=>{
    console.log("server Started");
-});
+});   

@@ -315,7 +315,7 @@ export const updateBalance = async (request, response, next) => {
     try {
         let result = await Admin.updateOne(
             {
-                email: "riya@gmail.com"
+                email: "ritu@gmail.com"
 
             },
             {
@@ -373,6 +373,21 @@ export const requestUpdate =async(request,response,next)=>{
         if(update)
         return response.status(200).json({message:"update successfully"});
         return response.status(404).json({message:"something went wrong"});
+     
+    } catch (error) {
+        return response.status(404).json({message:"internal server errror"});
+
+    }
+}
+
+export const findByCategoryProperty = async(request,response,next)=>{
+    console.log(request.body);
+    try {
+        await Property.find({houseCategory:request.body.category}).then(result=>{
+            return response.status(200).json({result});
+        }).catch(err=>{
+            return response.status(401).json({message:"something went wrong"});
+        })
      
     } catch (error) {
         return response.status(404).json({message:"internal server errror"});
