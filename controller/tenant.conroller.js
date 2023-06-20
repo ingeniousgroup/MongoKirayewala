@@ -302,7 +302,7 @@ export const sendOtp = async(request,response,next)=>{
 
 export const requestList = async(request,response,next)=>{
    try {
-    let list = await HouseRequest.find({userId:request.body.userId});
+    let list = await HouseRequest.find({userId:request.body.userId}).populate({path:"propertyId",populate:{path:"userId"}});
     return response.status(200).json({message:"List Found Succecfully",list,status:true});
    } catch (err) {
     console.log(err);
