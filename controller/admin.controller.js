@@ -55,6 +55,7 @@ export const viewTenants = async (request, response, next) => {
 
 export const viewOwners = async (request, response, next) => {
     try {
+        
         let ownerList = await User.find({ role: request.body.role });
         return response.status(200).json({ ownerList, status: true });
     } catch (err) {
@@ -71,9 +72,9 @@ export const changePassword = async (request, response, next) => {
                 var saltKey = await bcrypt.genSalt(10);
                 let password = await bcrypt.hash(request.body.newPassword, saltKey);
                 let admin = await Admin.updateOne({ _id: request.body.id }, { password });
-                return response.status(200).json({ message: "update password succesfuly", status: true })
+                return response.status(200).json({ message: "change password succesfuly", status: true })
             }
-            return response.status(401).json({ message: "wrong currentPassword", status: false })
+            return response.status(401).json({ message: "wrong current password", status: false })
         }
         return response.status(404).json({ message: "this admin is not found", status: false })
 
@@ -84,6 +85,7 @@ export const changePassword = async (request, response, next) => {
 
 export const viewHouseRequest = async (request, response, next) => {
     try {
+        
         let requestList = await HouseRequest.find().populate({ path: "userId" }).populate({ path: 'propertyId' });
         return response.status(200).json({ requestList, status: true });
     } catch (error) {
