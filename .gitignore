@@ -1,6 +1,4 @@
-node_modules/
-district.route.js
-state.route.js
-city.controller.js
-state.controller.js
+/node_modules
 package.json
+.env
+.gitIgnore
